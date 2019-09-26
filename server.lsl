@@ -73,13 +73,14 @@ default
          query_arg = llUnescapeURL(query_arg);
          list query_args = llParseString2List(query_arg,["?","=","+","&"],[]);
 
+         llOwnerSay("method: "+method);   
          if (method == "GET")
          {
             llSetContentType(id, CONTENT_TYPE_TEXT);
             llHTTPResponse(id, 200, "OK");
             getHandler(path,query_args,body);
          }
-         if (method == "POST")
+         else if (method == "POST")
          {
             llSetContentType(id, CONTENT_TYPE_TEXT);
             llHTTPResponse(id, 200, "OK");

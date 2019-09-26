@@ -50,7 +50,7 @@ default
       }
       else
       {
-         llOwnerSay(llList2CSV([id,method,body]));
+         llOwnerSay("NEW REQUEST: "+llList2CSV([id,method,body]));
          list headerList = ["x-script-url",
                             "x-path-info", "x-query-string",
                             "x-remote-ip", "user-agent",
@@ -69,9 +69,17 @@ default
          list path = llParseString2List(llGetHTTPHeader(id,"x-path-info"),["/"],[]);
          // Split up the query args into a usable list
          // If you use ?, =, + or & in keys or values then you may need to adjust this.
-         list query_args = llParseString2List(llGetHTTPHeader(id,"x-query-string"),["?","=","+","&"],[]);
+         string query_arg = llGetHTTPHeader(id,"x-query-string");
+         query_arg = llUnescapeURL(query_arg);
+         list query_args = llParseString2List(query_arg,["?","=","+","&"],[]);
 
          if (method == "GET")
+         {
+            llSetContentType(id, CONTENT_TYPE_TEXT);
+            llHTTPResponse(id, 200, "OK");
+            getHandler(path,query_args,body);
+         }
+         if (method == "POST")
          {
             llSetContentType(id, CONTENT_TYPE_TEXT);
             llHTTPResponse(id, 200, "OK");

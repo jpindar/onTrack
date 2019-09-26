@@ -13,6 +13,15 @@
 
 key url_request;
 
+getHandler(list path, list args, string body)
+{
+   llOwnerSay("path: " + llList2CSV(path));
+   llOwnerSay("args: " + llList2CSV(args));
+   llOwnerSay("body: " + body);
+}
+
+
+
 default
 {
    state_entry()
@@ -27,11 +36,6 @@ default
     
    http_request(key id, string method, string body)
    {
-      integer goodResponseStatus = 200;
-      string goodResponseBody = "OK";
-      integer badResponseStatus = 400;
-      string badResponseBody = "Unsupported method"; 
-      //llOwnerSay(llList2CSV([id,method,body]));
       if (url_request == id)
       {
          url_request = "";
@@ -63,16 +67,20 @@ default
          
          // Split up any path information into path segments
          list path = llParseString2List(llGetHTTPHeader(id,"x-path-info"),["/"],[]);
-         llOwnerSay("path: "+llList2CSV(path));  
          // Split up the query args into a usable list
          // If you use ?, =, + or & in keys or values then you may need to adjust this.
          list query_args = llParseString2List(llGetHTTPHeader(id,"x-query-string"),["?","=","+","&"],[]);
-         llOwnerSay("args: "+llList2CSV(query_args));
 
-         llOwnerSay("body:\n" + body);
-
-         llSetContentType(id, CONTENT_TYPE_TEXT);
-         llHTTPResponse(id, goodResponseStatus, goodResponseBody);
+         if (method == "GET")
+         {
+            llSetContentType(id, CONTENT_TYPE_TEXT);
+            llHTTPResponse(id, 200, "OK");
+            getHandler(path,query_args,body);
+         }
+         else
+         {
+            llHTTPResponse(id,405,"Unsupported Method");
+         }
       }
        
 

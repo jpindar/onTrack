@@ -60,8 +60,17 @@ default
             llOwnerSay(header+": "+llGetHTTPHeader(id, header));
          }
          while (++index);
+         
+         // Split up any path information into path segments
+         list path = llParseString2List(llGetHTTPHeader(id,"x-path-info"),["/"],[]);
+         llOwnerSay("path: "+llList2CSV(path));  
+         // Split up the query args into a usable list
+         // If you use ?, =, + or & in keys or values then you may need to adjust this.
+         list query_args = llParseString2List(llGetHTTPHeader(id,"x-query-string"),["?","=","+","&"],[]);
+         llOwnerSay("args: "+llList2CSV(query_args));
 
          llOwnerSay("body:\n" + body);
+
          llSetContentType(id, CONTENT_TYPE_TEXT);
          llHTTPResponse(id, goodResponseStatus, goodResponseBody);
       }

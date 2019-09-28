@@ -31,7 +31,7 @@ default
 
    touch_start(integer total_number)
    {
-      llSay(0, "Touched.");
+      llResetScript();
    }
     
    http_request(key id, string method, string body)

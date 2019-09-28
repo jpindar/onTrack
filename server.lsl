@@ -41,7 +41,9 @@ default
          url_request = "";
          if (method == URL_REQUEST_GRANTED)
          {
-            llOwnerSay("NEW URL: " + body);
+            string msg = "NEW URL: " + body;
+            llOwnerSay(msg);
+            llMessageLinked(LINK_SET, 0, msg, "");
          }
          else if (method == URL_REQUEST_DENIED)
          {             
